@@ -6,6 +6,8 @@ import * as config from "./config";
 import { TEST_CONFIG } from "./test_config";
 import { DB } from "./backend/database";
 
+import * as messages from "./pages/messages";
+
 function links(): string {
     return `
         <div>
@@ -44,14 +46,7 @@ async function run() {
 
     app.get("/messages", (c) => {
         let html = links();
-        const messages = [...DB.message_map.values()];
-
-        messages.sort((m1, m2) => m2.id - m1.id);
-
-        for (const message of messages) {
-            html += `<div>${message.content}</div>`;
-        }
-
+        html += messages.html();
         return c.html(html);
     });
 
