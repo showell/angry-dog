@@ -12,16 +12,18 @@ async function run() {
 
     const app = new Hono();
 
-    app.get("/test", (c) => {
-        return c.text("test");
+    app.get("/", (c) => {
+        return c.html(`
+           <a href="/users">Users</a>
+        `);
     });
 
-    app.get("/", (c) => {
+    app.get("/users", (c) => {
         const users = [...DB.user_map.values()];
 
         users.sort((u1, u2) => u1.full_name.localeCompare(u2.full_name));
 
-        let html = `<h4>${users.length} Users</h4>`;
+        let html = `<h4>${users.length} users</h4>`;
 
         for (const user of users) {
             html += `<div>${user.full_name}</div>`;
