@@ -9,10 +9,13 @@ export function html(): string {
 
     let html = "";
 
+    html += `${messages.length} messages</h4>`;
+
     for (const message of messages) {
         const mr = new MessageRow(message);
         html += `<div>${mr.sender_name()}</div>`;
         html += `<div>${mr.content()}</div>`;
+        html += `<hr>`;
     }
 
     return html;

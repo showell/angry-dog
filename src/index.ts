@@ -1,10 +1,11 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 
-import * as database from "./backend/database";
+import { DB, fetch_original_data } from "./backend/database";
+import * as message_fetch from "./backend/message_fetch";
+
 import * as config from "./config";
 import { TEST_CONFIG } from "./test_config";
-import { DB } from "./backend/database";
 
 import * as messages from "./pages/messages";
 
@@ -20,7 +21,7 @@ function links(): string {
 
 async function run() {
     config.set_current_realm_config(TEST_CONFIG);
-    await database.fetch_original_data();
+    await fetch_original_data();
 
     const app = new Hono();
 
@@ -82,6 +83,8 @@ async function run() {
             server.close();
         });
     }
+
+    message_fetch.backfill(DB);
 }
 
 run();
