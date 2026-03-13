@@ -1,0 +1,52 @@
+import { serve } from "@hono/node-server";
+import { Hono } from "hono";
+
+import * as database from "./backend/database";
+import * as config from "./config";
+import { TEST_CONFIG } from "./test_config";
+import { DB } from "./backend/database";
+
+async function run() {
+    config.set_current_realm_config(TEST_CONFIG);
+    await database.fetch_original_data();
+
+    const app = new Hono();
+
+    app.get("/test", (c) => {
+        return c.text("test");
+    });
+
+    app.get("/", (c) => {
+        const users = [...DB.user_map.values()];
+
+        users.sort((u1, u2) => u1.full_name.localeCompare(u2.full_name));
+
+        let html = `<h4>${users.length} Users</h4>`;
+
+        for (const user of users) {
+            html += `<div>${user.full_name}</div>`;
+        }
+
+        return c.html(html);
+    });
+
+    const server = serve(
+        {
+            fetch: app.fetch,
+            port: 3000,
+        },
+        (info) => {
+            console.log(`Server is running on http://localhost:${info.port}`);
+        },
+    );
+
+    // Add this to your main app file (e.g., app.ts)
+    if (import.meta.hot) {
+        import.meta.hot.on("vite:beforeFullReload", () => {
+            // Replace 'server' with your HTTP server instance
+            server.close();
+        });
+    }
+}
+
+run();
