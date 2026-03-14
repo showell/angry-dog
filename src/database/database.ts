@@ -1,8 +1,8 @@
 import type { User, Stream, Message } from "./db_types";
-import type { ZulipEvent } from "./event";
+import type { ZulipEvent } from "../server/event";
 
-import { EventFlavor } from "./event";
-import * as fetch from "./fetch";
+import { EventFlavor } from "../server/event";
+import * as fetch from "../server/fetch";
 import { TopicMap } from "./topic_map";
 
 export let DB: Database;

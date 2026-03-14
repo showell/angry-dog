@@ -1,7 +1,7 @@
-import type { Message } from "./db_types";
+import type { Message } from "../database/db_types";
+import type { TopicMap } from "../database/topic_map";
 
 import { MessageList } from "./message_list";
-import { TopicMap } from "./topic_map";
 import { TopicRow } from "./row_types";
 
 export function get_rows(topic_map: TopicMap, messages: Message[]): TopicRow[] {

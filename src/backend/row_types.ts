@@ -1,7 +1,8 @@
-import type { Message, Stream, Topic } from "./db_types.ts";
+import type { Message, Stream, Topic } from "../database/db_types.ts";
+
 import type { ListInfo } from "./message_list.ts";
 
-import { DB } from "./database";
+import { DB } from "../database/database";
 
 export class ChannelRow {
     _channel: Stream;

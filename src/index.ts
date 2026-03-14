@@ -1,12 +1,13 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 
-import type { ZulipEvent } from "./backend/event";
+import type { ZulipEvent } from "./server/event";
 
-import * as database from "./backend/database";
-import { EventHandler } from "./backend/event";
-import * as message_fetch from "./backend/message_fetch";
-import * as zulip_client from "./backend/zulip_client";
+import * as database from "./database/database";
+
+import { EventHandler } from "./server/event";
+import * as message_fetch from "./server/message_fetch";
+import * as zulip_client from "./server/zulip_client";
 
 import * as config from "./config";
 import * as css from "./css";

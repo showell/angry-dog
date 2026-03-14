@@ -1,5 +1,5 @@
-import type { Database } from "./database";
-import type { Message } from "./db_types";
+import type { Database } from "../database/database";
+import type { Message } from "../database/db_types";
 import type { ServerMessage } from "./zulip_client";
 
 import { fix_content } from "./content";

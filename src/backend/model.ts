@@ -1,8 +1,8 @@
-import type { Message } from "./db_types";
-import type { Filter } from "./filter";
+import type { Message } from "../database/db_types";
 import type { ChannelRow, TopicRow } from "./row_types";
 
-import { DB } from "./database";
+import { DB } from "../database/database";
+
 import * as channel_row_query from "./channel_row_query";
 import * as topic_row_query from "./topic_row_query";
 
@@ -37,23 +37,13 @@ export function messages_for_topic(topic_id: number): Message[] {
     return result;
 }
 
-export function get_topic_rows(stream_id: number): TopicRow[] {
-    function predicate(message: Message) {
-        return message.stream_id === stream_id;
-    }
-    const messages = filtered_messages({ predicate });
-    return topic_row_query.get_rows(DB.topic_map, messages);
-}
-
-// MESSAGES
-
-export function filtered_messages(filter: Filter): Message[] {
-    const result = [];
+export function get_topic_rows(channel_id: number): TopicRow[] {
+    const messages = [];
     for (const message of DB.message_map.values()) {
-        if (filter.predicate(message)) {
-            result.push(message);
+        if (message.stream_id === channel_id) {
+            messages.push(message);
         }
     }
-    result.sort((m1, m2) => m1.id - m2.id);
-    return result;
+    messages.sort((m1, m2) => m1.id - m2.id);
+    return topic_row_query.get_rows(DB.topic_map, messages);
 }

@@ -1,8 +1,9 @@
-import type { Database } from "./database";
-import type { Message, Stream, User } from "./db_types";
+import type { Database } from "../database/database";
+import type { Message, Stream, User } from "../database/db_types";
+
+import { TopicMap } from "../database/topic_map";
 
 import * as message_fetch from "./message_fetch";
-import { TopicMap } from "./topic_map";
 import * as zulip_client from "./zulip_client";
 
 async function fetch_streams(): Promise<Stream[]> {
