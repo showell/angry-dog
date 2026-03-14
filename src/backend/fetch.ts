@@ -1,7 +1,6 @@
 import type { Database } from "./database";
 import type { Message, Stream, User } from "./db_types";
 
-import * as config from "../config";
 import * as message_fetch from "./message_fetch";
 import { TopicMap } from "./topic_map";
 import * as zulip_client from "./zulip_client";
@@ -19,21 +18,8 @@ async function fetch_streams(): Promise<Stream[]> {
     return streams;
 }
 
-async function fetch_users(): Promise<User[]> {
-    const rows: any[] = await zulip_client.get_users();
-
-    return rows.map((row) => {
-        return {
-            id: row.user_id,
-            full_name: row.full_name,
-        };
-    });
-}
-
 export async function fetch_model_data(): Promise<Database> {
     console.log("start fetch");
-
-    const users = await fetch_users();
 
     const user_map = new Map<number, User>();
 

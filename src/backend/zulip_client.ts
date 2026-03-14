@@ -1,8 +1,4 @@
-import type { Message } from "./db_types";
-import type { EventHandler, ZulipEvent } from "./event";
-
-import { DB } from "./database";
-import { EventFlavor } from "./event";
+import type { EventHandler } from "./event";
 
 import * as config from "../config";
 

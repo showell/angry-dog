@@ -45,7 +45,6 @@ function build_event(raw_event: any): ZulipEvent | undefined {
     // console.log(JSON.stringify(raw_event, null, 4));
     switch (raw_event.type) {
         case "message": {
-            const local_message_id = raw_event.local_message_id;
             const raw_message = raw_event.message;
 
             if (raw_message.type === "stream") {
