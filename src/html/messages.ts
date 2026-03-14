@@ -1,6 +1,5 @@
 import he from "he";
 
-import { DB } from "../backend/database";
 import * as model from "../backend/model";
 import { MessageRow } from "../backend/row_types";
 

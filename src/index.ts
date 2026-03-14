@@ -17,11 +17,14 @@ import * as messages from "./html/messages";
 import * as topics from "./html/topics";
 
 function boilerplate(): string {
-    return css.STYLE + `
+    return (
+        css.STYLE +
+        `
         <div>
             <a href="/channels">Channels</a>
         </div>
-    `;
+    `
+    );
 }
 
 async function start_model_code() {
