@@ -4,12 +4,12 @@ function fix_src(root: HTMLElement, tag_name: string) {
     const nodes = root.querySelectorAll(tag_name);
 
     nodes.forEach((node) => {
-        const src = node.getAttribute('src');
+        const src = node.getAttribute("src");
 
         if (src) {
-            node.setAttribute('data-src', src);
-            node.removeAttribute('src');
-            node.classList.add('lazyload');
+            node.setAttribute("data-src", src);
+            node.removeAttribute("src");
+            node.classList.add("lazyload");
         }
     });
 }
