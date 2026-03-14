@@ -22,7 +22,7 @@ export class ChannelRow {
         this._list_info = list_info;
     }
 
-    stream_id(): number {
+    id(): number {
         return this._channel.stream_id;
     }
 

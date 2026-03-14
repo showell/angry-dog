@@ -7,6 +7,7 @@ import * as message_fetch from "./backend/message_fetch";
 import * as config from "./config";
 import { TEST_CONFIG } from "./test_config";
 
+import * as channels from "./pages/channels";
 import * as messages from "./pages/messages";
 
 function links(): string {
@@ -32,16 +33,7 @@ async function run() {
 
     app.get("/channels", (c) => {
         let html = links();
-        const channels = [...DB.channel_map.values()];
-
-        channels.sort((u1, u2) => u1.name.localeCompare(u2.name));
-
-        html += `<h4>${channels.length} channels</h4>`;
-
-        for (const channel of channels) {
-            html += `<div>${channel.name}</div>`;
-        }
-
+        html += channels.html();
         return c.html(html);
     });
 
