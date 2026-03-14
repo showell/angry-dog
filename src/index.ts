@@ -19,7 +19,6 @@ function links(): string {
     return `
         <div>
             <a href="/channels">Channels</a>
-            <a href="/messages">Messages</a>
         </div>
     `;
 }
@@ -57,15 +56,6 @@ async function run() {
     app.get("/channels", (c) => {
         let html = links();
         html += channels.html();
-        return c.html(html);
-    });
-
-    app.get("/messages", (c) => {
-        const t = performance.now();
-        let html = links();
-        html += messages.html();
-        const elapsed = performance.now() - t;
-        console.log("messages: elapsed", elapsed.toFixed(3));
         return c.html(html);
     });
 

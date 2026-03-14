@@ -30,6 +30,10 @@ export function channel_name_for(channel_id: number): string {
 
 // TOPICS
 
+export function topic_name_for(topic_id: number): string {
+    return DB.topic_map.get(topic_id)!.topic_name;
+}
+
 export function messages_for_topic(topic_id: number): Message[] {
     // The index can return false positives, so be careful (due
     // to topic moves), but it will be a superset of the ids
