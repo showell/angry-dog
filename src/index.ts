@@ -9,9 +9,7 @@ import { EventHandler } from "./server/event";
 import * as message_fetch from "./server/message_fetch";
 import * as zulip_client from "./server/zulip_client";
 
-import * as config from "./config";
 import * as css from "./css";
-import { TEST_CONFIG } from "./test_config";
 
 import * as channels from "./html/channels";
 import * as messages from "./html/messages";
@@ -29,8 +27,6 @@ function boilerplate(): string {
 }
 
 async function start_model_code() {
-    config.set_current_realm_config(TEST_CONFIG);
-
     function handle_zulip_event(event: ZulipEvent) {
         database.handle_event(event);
     }

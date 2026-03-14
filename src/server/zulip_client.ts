@@ -1,20 +1,20 @@
 import type { EventHandler } from "./event";
 
-import * as config from "../config";
+import { TEST_CONFIG } from "../test_config";
 
 let queue_id: string | undefined;
 let last_event_id: string | undefined;
 
 function get_headers() {
     const auth = btoa(
-        `${config.get_email_for_current_realm()}:${config.get_api_key_for_current_realm()}`,
+        `${TEST_CONFIG.email}:${TEST_CONFIG.api_key}`,
     );
     const auth_header = `Basic ${auth}`;
     return { Authorization: auth_header };
 }
 
 export async function register_queue() {
-    const url = new URL("/api/v1/register", config.get_current_realm_url());
+    const url = new URL("/api/v1/register", TEST_CONFIG.url);
     url.searchParams.set("apply_markdown", "true");
     url.searchParams.set("include_subscribers", "false");
     url.searchParams.set("slim_presence", "true");
@@ -34,7 +34,7 @@ export async function start_polling(event_handler: EventHandler) {
         return;
     }
 
-    const url = new URL("/api/v1/events", config.get_current_realm_url());
+    const url = new URL("/api/v1/events", TEST_CONFIG.url);
 
     while (queue_id !== undefined && last_event_id !== undefined) {
         url.searchParams.set("queue_id", queue_id);
@@ -64,7 +64,7 @@ export type ServerMessage = {
 };
 
 export async function get_messages(anchor: string, num_before: number) {
-    const url = new URL(`/api/v1/messages`, config.get_current_realm_url());
+    const url = new URL(`/api/v1/messages`, TEST_CONFIG.url);
     url.searchParams.set("narrow", `[]`);
     url.searchParams.set("num_before", JSON.stringify(num_before));
     url.searchParams.set("anchor", anchor);
@@ -76,7 +76,7 @@ export async function get_messages(anchor: string, num_before: number) {
 export async function get_subscriptions() {
     const url = new URL(
         `/api/v1/users/me/subscriptions`,
-        config.get_current_realm_url(),
+        TEST_CONFIG.url,
     );
     const response = await fetch(url, { headers: get_headers() });
     const data = await response.json();
