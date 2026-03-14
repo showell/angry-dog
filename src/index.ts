@@ -9,14 +9,15 @@ import * as message_fetch from "./backend/message_fetch";
 import * as zulip_client from "./backend/zulip_client";
 
 import * as config from "./config";
+import * as css from "./css";
 import { TEST_CONFIG } from "./test_config";
 
 import * as channels from "./html/channels";
 import * as messages from "./html/messages";
 import * as topics from "./html/topics";
 
-function links(): string {
-    return `
+function boilerplate(): string {
+    return css.STYLE + `
         <div>
             <a href="/channels">Channels</a>
         </div>
@@ -49,26 +50,26 @@ async function run() {
     const app = new Hono();
 
     app.get("/", (c) => {
-        const html = links();
+        const html = boilerplate();
         return c.html(html);
     });
 
     app.get("/channels", (c) => {
-        let html = links();
+        let html = boilerplate();
         html += channels.html();
         return c.html(html);
     });
 
     app.get("/topic_messages/:topic_id", (c) => {
         const topic_id = c.req.param("topic_id");
-        let html = links();
+        let html = boilerplate();
         html += messages.by_topic_html(parseInt(topic_id));
         return c.html(html);
     });
 
     app.get("/topics/:channel_id", (c) => {
         const channel_id = c.req.param("channel_id");
-        let html = links();
+        let html = boilerplate();
         html += topics.html(parseInt(channel_id));
         return c.html(html);
     });
