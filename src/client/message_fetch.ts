@@ -24,7 +24,7 @@ export async function fetch_initial_messages(db: Database): Promise<void> {
         oldest_id: data.messages[0].id,
     };
 
-    await process_message_rows_from_server(db, data.messages);
+    process_message_rows_from_server(db, data.messages);
 
     console.log(`${db.message_map.size} messages fetched!`);
     console.log(STATE);
@@ -53,7 +53,7 @@ export async function backfill(db: Database): Promise<void> {
             oldest_id: data.messages[0].id,
         };
 
-        await process_message_rows_from_server(db, data.messages);
+        process_message_rows_from_server(db, data.messages);
 
         console.log(`${db.message_map.size} messages in cache! (backfill)`);
         console.log(STATE);
@@ -62,10 +62,10 @@ export async function backfill(db: Database): Promise<void> {
     }
 }
 
-async function process_message_rows_from_server(
+function process_message_rows_from_server(
     db: Database,
     rows: ServerMessage[],
-): Promise<void> {
+): void {
     const messages: Message[] = rows
         .filter((row) => row.type === "stream")
         .map((row) => {
