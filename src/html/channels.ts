@@ -6,26 +6,35 @@ import * as model from "../backend/model";
 
 const STYLE = `
 <style>
-    .row {
-        display: flex;
-    }
+.row {
+    display: flex;
+    margin-bottom: 2px;
+}
 
-    .name {
-        width: 300px;
-    }
+.channel_name {
+    width: 300px;
+}
+
+.channel_count {
+    text-align: right;
+    width: 150px;
+    color: #000080;
+}
 </style>
 `;
 
 function channel_row_html(channel_row: ChannelRow): string {
     const channel_id = channel_row.id();
     const name = he.escape(channel_row.name());
+    const count = channel_row.num_topics();
 
     return `
 <div class="row">
-    <div class="name">${name}</div>
+    <div class="channel_name">${name}</div>
     <div>
         <a href="/topics/${channel_id}">topics</a>
     </div>
+    <div class="channel_count">${count} topics</div>
 </div>
 `;
 }

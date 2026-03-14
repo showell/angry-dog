@@ -14,7 +14,6 @@ const STYLE = `
 
 .topic_name {
     width: 300px;
-    padding-right: 3px;
 }
 
 .topic_count {

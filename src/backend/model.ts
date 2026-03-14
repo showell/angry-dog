@@ -1,4 +1,4 @@
-import type { User, Message, Stream } from "./db_types";
+import type { User, Message } from "./db_types";
 import type { Filter } from "./filter";
 import type { ChannelRow, TopicRow } from "./row_types";
 
