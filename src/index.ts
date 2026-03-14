@@ -47,6 +47,13 @@ async function run() {
         return c.html(html);
     });
 
+    app.get("/topic_messages/:topic_id", (c) => {
+        const topic_id = c.req.param("topic_id");
+        let html = links();
+        html += messages.by_topic_html(parseInt(topic_id));
+        return c.html(html);
+    });
+
     app.get("/topics/:channel_id", (c) => {
         const channel_id = c.req.param("channel_id");
         let html = links();
