@@ -19,7 +19,6 @@ export async function register_queue() {
     url.searchParams.set("include_subscribers", "false");
     url.searchParams.set("slim_presence", "true");
     url.searchParams.set("all_public_streams", "false");
-    url.searchParams.set("client", "Angry Cat (showell)");
 
     const response = await fetch(url, {
         method: "POST",
@@ -72,13 +71,6 @@ export async function get_messages(anchor: string, num_before: number) {
     const response = await fetch(url, { headers: get_headers() });
     const data = await response.json();
     return data;
-}
-
-export async function get_users() {
-    const url = new URL(`/api/v1/users`, config.get_current_realm_url());
-    const response = await fetch(url, { headers: get_headers() });
-    const data = await response.json();
-    return data.members;
 }
 
 export async function get_subscriptions() {
