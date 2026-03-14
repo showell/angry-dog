@@ -1,3 +1,7 @@
+import he from "he";
+
+import type { ChannelRow } from "../backend/row_types";
+
 import * as model from "../backend/model";
 
 const STYLE = `
@@ -8,10 +12,23 @@ const STYLE = `
 
     .name {
         width: 300px;
-        color: green;
     }
 </style>
-`
+`;
+
+function channel_row_html(channel_row: ChannelRow): string {
+    const channel_id = channel_row.id();
+    const name = he.escape(channel_row.name());
+
+    return `
+<div class="row">
+    <div class="name">${name}</div>
+    <div>
+        <a href="/topics/${channel_id}">topics</a>
+    </div>
+</div>
+`;
+}
 
 export function html(): string {
     const channel_rows = model.get_channel_rows();
@@ -23,12 +40,7 @@ export function html(): string {
     html += `<h4>${channel_rows.length} channels</h4>`;
 
     for (const channel_row of channel_rows) {
-        const topics_link = `<a href="/topics/${channel_row.id()}">topics</a>`;
-
-        html += `<div class="row">`;
-        html += `<div class="name">${channel_row.name()}</div>`;
-        html += `<div class="topics_link">${topics_link}</div>`;
-        html += `</div>`;
+        html += channel_row_html(channel_row);
     }
 
     return html;
