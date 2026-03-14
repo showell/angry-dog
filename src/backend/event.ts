@@ -1,5 +1,6 @@
 import type { Message } from "./db_types";
 
+import { fix_content } from "./content";
 import { DB } from "./database";
 import * as parse from "./parse";
 
@@ -83,7 +84,7 @@ function build_event(raw_event: any): ZulipEvent | undefined {
 
                 const message: Message = {
                     code_snippets: [],
-                    content: raw_message.content,
+                    content: fix_content(raw_message.content),
                     github_refs: [],
                     id: raw_message.id,
                     is_super_new: true,

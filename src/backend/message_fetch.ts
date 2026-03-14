@@ -2,6 +2,7 @@ import type { Database } from "./database";
 import type { Message } from "./db_types";
 import type { ServerMessage } from "./zulip_client";
 
+import { fix_content } from "./content";
 import * as parse from "./parse";
 import * as zulip_client from "./zulip_client";
 
@@ -82,7 +83,7 @@ async function process_message_rows_from_server(
 
             const message: Message = {
                 code_snippets: [],
-                content: row.content,
+                content: fix_content(row.content),
                 github_refs: [],
                 id: message_id,
                 is_super_new: false,
