@@ -1,8 +1,12 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 
-import { DB, fetch_original_data } from "./backend/database";
+import type { ZulipEvent } from "./backend/event";
+
+import * as database from "./backend/database";
+import { EventHandler } from "./backend/event";
 import * as message_fetch from "./backend/message_fetch";
+import * as zulip_client from "./backend/zulip_client";
 
 import * as config from "./config";
 import { TEST_CONFIG } from "./test_config";
@@ -16,14 +20,32 @@ function links(): string {
         <div>
             <a href="/channels">Channels</a>
             <a href="/messages">Messages</a>
-            <a href="/users">Users</a>
         </div>
     `;
 }
 
-async function run() {
+async function start_model_code() {
     config.set_current_realm_config(TEST_CONFIG);
-    await fetch_original_data();
+
+    function handle_zulip_event(event: ZulipEvent) {
+        database.handle_event(event);
+    }
+
+    const event_manager = new EventHandler(handle_zulip_event);
+
+    // we wait for register to finish, but then polling goes
+    // on "forever" asynchronously
+    await zulip_client.register_queue();
+
+    await database.fetch_original_data();
+
+    zulip_client.start_polling(event_manager);
+
+    message_fetch.backfill(database.DB);
+}
+
+async function run() {
+    await start_model_code();
 
     const app = new Hono();
 
@@ -61,21 +83,6 @@ async function run() {
         return c.html(html);
     });
 
-    app.get("/users", (c) => {
-        let html = links();
-        const users = [...DB.user_map.values()];
-
-        users.sort((u1, u2) => u1.full_name.localeCompare(u2.full_name));
-
-        html += `<h4>${users.length} users</h4>`;
-
-        for (const user of users) {
-            html += `<div>${user.full_name}</div>`;
-        }
-
-        return c.html(html);
-    });
-
     const server = serve(
         {
             fetch: app.fetch,
@@ -93,8 +100,6 @@ async function run() {
             server.close();
         });
     }
-
-    message_fetch.backfill(DB);
 }
 
 run();
