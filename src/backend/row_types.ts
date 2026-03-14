@@ -136,7 +136,7 @@ export class MessageRow {
     }
 
     stream_name(): string {
-        return model.stream_name_for(this._message.stream_id);
+        return model.channel_name_for(this._message.stream_id);
     }
 
     timestamp(): number {

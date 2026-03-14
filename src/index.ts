@@ -11,9 +11,9 @@ import * as zulip_client from "./backend/zulip_client";
 import * as config from "./config";
 import { TEST_CONFIG } from "./test_config";
 
-import * as channels from "./pages/channels";
-import * as messages from "./pages/messages";
-import * as topics from "./pages/topics";
+import * as channels from "./html/channels";
+import * as messages from "./html/messages";
+import * as topics from "./html/topics";
 
 function links(): string {
     return `

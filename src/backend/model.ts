@@ -24,24 +24,8 @@ export function get_channel_rows(): ChannelRow[] {
     ]);
 }
 
-export function stream_for(stream_id: number): Stream {
-    return DB.channel_map.get(stream_id)!;
-}
-
-export function channel_id_for(channel_name: string): number | undefined {
-    const channel_map = DB.channel_map;
-
-    // TODO: maintain reverse map? (probably rarely needed)
-    for (const channel_id of channel_map.keys()) {
-        if (channel_map.get(channel_id)!.name === channel_name) {
-            return channel_id;
-        }
-    }
-    return undefined;
-}
-
-export function stream_name_for(stream_id: number): string {
-    return stream_for(stream_id).name;
+export function channel_name_for(channel_id: number): string {
+    return DB.channel_map.get(channel_id)!.name;
 }
 
 // TOPICS
