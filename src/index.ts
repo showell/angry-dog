@@ -46,8 +46,11 @@ async function run() {
     });
 
     app.get("/messages", (c) => {
+        const t = performance.now();
         let html = links();
         html += messages.html();
+        const elapsed = performance.now() - t;
+        console.log("messages: elapsed", elapsed.toFixed(3));
         return c.html(html);
     });
 
