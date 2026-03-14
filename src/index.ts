@@ -9,6 +9,7 @@ import { TEST_CONFIG } from "./test_config";
 
 import * as channels from "./pages/channels";
 import * as messages from "./pages/messages";
+import * as topics from "./pages/topics";
 
 function links(): string {
     return `
@@ -43,6 +44,13 @@ async function run() {
         html += messages.html();
         const elapsed = performance.now() - t;
         console.log("messages: elapsed", elapsed.toFixed(3));
+        return c.html(html);
+    });
+
+    app.get("/topics/:channel_id", (c) => {
+        const channel_id = c.req.param("channel_id");
+        let html = links();
+        html += topics.html(parseInt(channel_id));
         return c.html(html);
     });
 
