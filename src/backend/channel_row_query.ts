@@ -11,10 +11,6 @@ export function get_rows(
     const message_list_map = new Map<number, MessageList>();
 
     for (const message of messages) {
-        if (message.type !== "stream") {
-            continue;
-        }
-
         const stream_id = message.stream_id;
 
         const message_list =

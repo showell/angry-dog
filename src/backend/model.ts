@@ -1,4 +1,4 @@
-import type { User, Message } from "./db_types";
+import type { Message } from "./db_types";
 import type { Filter } from "./filter";
 import type { ChannelRow, TopicRow } from "./row_types";
 
@@ -6,18 +6,6 @@ import { DB } from "./database";
 import * as channel_row_query from "./channel_row_query";
 import * as topic_row_query from "./topic_row_query";
 
-// USERS (mostly just pull directly from DB.user_map for now)
-
-export function is_me(user_id: number): boolean {
-    return user_id === DB.current_user_id;
-}
-
-export function current_user_name(): string {
-    return DB.user_map.get(DB.current_user_id)!.full_name;
-}
-
-// STREAMS
-//
 export function get_channel_rows(): ChannelRow[] {
     return channel_row_query.get_rows(DB.channel_map, [
         ...DB.message_map.values(),
@@ -28,24 +16,15 @@ export function channel_name_for(channel_id: number): string {
     return DB.channel_map.get(channel_id)!.name;
 }
 
-// TOPICS
-
 export function topic_name_for(topic_id: number): string {
     return DB.topic_map.get(topic_id)!.topic_name;
 }
 
 export function messages_for_topic(topic_id: number): Message[] {
-    // The index can return false positives, so be careful (due
-    // to topic moves), but it will be a superset of the ids
-    // that match on topic (and generally much smaller than the
-    // entire collection of messages we have fetched).
-    const message_ids =
-        DB.message_index.candidate_message_ids_for_topic_id(topic_id);
-
+    const messages = DB.message_map.values();
     const result = [];
 
-    for (const message_id of message_ids) {
-        const message = DB.message_map.get(message_id);
+    for (const message of messages) {
         if (message) {
             if (message.topic_id === topic_id) {
                 result.push(message);
@@ -77,35 +56,4 @@ export function filtered_messages(filter: Filter): Message[] {
     }
     result.sort((m1, m2) => m1.id - m2.id);
     return result;
-}
-
-export function get_total_unread_count(): number {
-    let count = 0;
-    for (const message of DB.message_map.values()) {
-        if (message.unread) {
-            ++count;
-        }
-    }
-    return count;
-}
-
-// MISC
-//
-export function participants_for_messages(messages: Message[]): User[] {
-    const map = new Map<number, number>();
-
-    for (const message of messages) {
-        const sender_id = message.sender_id;
-        const count = (map.get(sender_id) ?? 0) + 1;
-        map.set(sender_id, count);
-    }
-
-    const sender_ids = [...map.keys()];
-
-    sender_ids.sort((s1, s2) => map.get(s2)! - map.get(s1)!);
-
-    // we still need system bots
-    return sender_ids
-        .map((sender_id) => DB.user_map.get(sender_id)!)
-        .filter((user) => user !== undefined);
 }

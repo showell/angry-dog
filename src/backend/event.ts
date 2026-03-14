@@ -2,36 +2,18 @@ import type { Message } from "./db_types";
 
 import { fix_content } from "./content";
 import { DB } from "./database";
-import * as parse from "./parse";
 
 export const enum EventFlavor {
     MESSAGE,
     MUTATE_MESSAGE_ADDRESS,
     MUTATE_MESSAGE_CONTENT,
-    MUTATE_UNREAD,
     UNKNOWN,
-    REACTION_ADD_EVENT,
-    REACTION_REMOVE_EVENT,
 }
 
 type MessageEvent = {
     flavor: EventFlavor.MESSAGE;
     message: Message;
     info: string;
-};
-
-export type ReactionEvent = {
-    flavor: EventFlavor.REACTION_ADD_EVENT | EventFlavor.REACTION_REMOVE_EVENT;
-    message_id: number;
-    user_id: number;
-    emoji_code: string;
-    emoji_name: string;
-};
-
-type MutateUnreadEvent = {
-    flavor: EventFlavor.MUTATE_UNREAD;
-    message_ids: number[];
-    unread: boolean;
 };
 
 type MutateMessageAddressEvent = {
@@ -57,8 +39,6 @@ export type ZulipEvent =
     | MessageEvent
     | MutateMessageAddressEvent
     | MutateMessageContentEvent
-    | MutateUnreadEvent
-    | ReactionEvent
     | UnknownEvent;
 
 function build_event(raw_event: any): ZulipEvent | undefined {
@@ -74,46 +54,18 @@ function build_event(raw_event: any): ZulipEvent | undefined {
                     raw_message.subject,
                 );
 
-                if (local_message_id) {
-                    console.log("local_message_id", local_message_id);
-                }
-
-                const unread =
-                    raw_event.flags.find((flag: string) => flag === "read") ===
-                    undefined;
-
                 const message: Message = {
-                    code_snippets: [],
                     content: fix_content(raw_message.content),
-                    github_refs: [],
                     id: raw_message.id,
-                    is_super_new: true,
-                    local_message_id,
                     sender_id: raw_message.sender_id,
                     stream_id: raw_message.stream_id,
-                    timestamp: raw_message.timestamp,
                     topic_id: topic.topic_id,
-                    type: "stream",
-                    unread,
                 };
-                parse.parse_content(message);
 
                 return {
                     flavor: EventFlavor.MESSAGE,
                     message,
                     info: `stream message id ${message.id}`,
-                };
-            }
-
-            return undefined;
-        }
-
-        case "update_message_flags": {
-            if (raw_event.flag === "read") {
-                return {
-                    flavor: EventFlavor.MUTATE_UNREAD,
-                    message_ids: raw_event.messages,
-                    unread: raw_event.op === "remove",
                 };
             }
 
@@ -145,22 +97,6 @@ function build_event(raw_event: any): ZulipEvent | undefined {
                 raw_content: raw_event.content,
                 content: raw_event.rendered_content,
             };
-        }
-
-        case "reaction": {
-            if (raw_event.reaction_type !== "unicode_emoji") return undefined;
-            const flavor =
-                raw_event.op === "add"
-                    ? EventFlavor.REACTION_ADD_EVENT
-                    : EventFlavor.REACTION_REMOVE_EVENT;
-            const event_object: ReactionEvent = {
-                flavor,
-                message_id: raw_event.message_id,
-                user_id: raw_event.user_id,
-                emoji_code: raw_event.emoji_code,
-                emoji_name: raw_event.emoji_name,
-            };
-            return event_object;
         }
     }
 

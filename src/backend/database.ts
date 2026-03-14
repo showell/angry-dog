@@ -1,11 +1,9 @@
 import type { User, Stream, Message } from "./db_types";
 import type { ZulipEvent } from "./event";
-import type { MessageIndex } from "./message_index";
 
 import { EventFlavor } from "./event";
 import * as fetch from "./fetch";
 import { TopicMap } from "./topic_map";
-import { ReactionsMap } from "./reactions";
 
 export let DB: Database;
 
@@ -13,13 +11,10 @@ export type MessageMap = Map<number, Message>;
 export type UserMap = Map<number, User>;
 
 export type Database = {
-    current_user_id: number;
     user_map: Map<number, User>;
     channel_map: Map<number, Stream>;
     topic_map: TopicMap;
     message_map: MessageMap;
-    message_index: MessageIndex;
-    reactions_map: ReactionsMap;
 };
 
 export async function fetch_original_data(): Promise<void> {
@@ -37,7 +32,6 @@ export function handle_event(event: ZulipEvent): void {
         mutate_messages(event.message_ids, (message) => {
             message.stream_id = event.new_channel_id;
             message.topic_id = event.new_topic_id;
-            DB.message_index.add_message(message);
         });
     }
 
@@ -46,24 +40,9 @@ export function handle_event(event: ZulipEvent): void {
             message.content = event.content;
         });
     }
-
-    if (event.flavor === EventFlavor.MUTATE_UNREAD) {
-        mutate_messages(event.message_ids, (message) => {
-            message.unread = event.unread;
-        });
-    }
-
-    if (event.flavor === EventFlavor.REACTION_ADD_EVENT) {
-        DB.reactions_map.process_add_event(event);
-    }
-
-    if (event.flavor === EventFlavor.REACTION_REMOVE_EVENT) {
-        DB.reactions_map.process_remove_event(event);
-    }
 }
 
 function add_message_to_cache(message: Message) {
-    DB.message_index.add_message(message);
     DB.message_map.set(message.id, message);
 }
 
