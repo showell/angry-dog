@@ -1,5 +1,7 @@
 import * as database from "../database/database";
 
+import * as zulip_glue from "../database/zulip_glue";
+
 import type { ServerMessage } from "./server_types";
 import * as zulip_client from "./zulip_client";
 
@@ -70,6 +72,6 @@ function process_message_rows_from_server(
     );
 
     for (const server_message of stream_messages) {
-        database.process_server_message(server_message);
+        zulip_glue.process_server_message(server_message);
     }
 }
