@@ -64,39 +64,41 @@ export async function backfill(db: Database): Promise<void> {
 
 function process_message_rows_from_server(
     db: Database,
-    rows: ServerMessage[],
+    server_messages: ServerMessage[],
 ): void {
-    const messages: Message[] = rows
-        .filter((row) => row.type === "stream")
-        .map((row) => {
-            const topic = db.topic_map.get_or_make_topic_for(
-                row.stream_id,
-                row.subject,
-            );
+    const stream_messages: ServerMessage[] = server_messages.filter(
+        (row) => row.type === "stream",
+    );
 
-            const message_id = row.id;
+    for (const server_message of stream_messages) {
+        const message_id = server_message.id;
+        const channel_id = server_message.stream_id;
+        const topic_name = server_message.subject;
+        const content = fix_content(server_message.content);
 
-            const message: Message = {
-                content: fix_content(row.content),
-                id: message_id,
-                sender_id: row.sender_id,
-                stream_id: row.stream_id,
-                topic_id: topic.topic_id,
-            };
+        const sender_id = server_message.sender_id;
 
-            return message;
-        });
+        const topic = db.topic_map.get_or_make_topic_for(
+            channel_id,
+            topic_name,
+        );
+        const topic_id = topic.topic_id;
 
-    for (const row of rows) {
-        if (!db.user_map.has(row.sender_id)) {
-            const id = row.sender_id;
-            const full_name = row.sender_full_name;
+        const message: Message = {
+            content,
+            message_id,
+            sender_id,
+            channel_id,
+            topic_id,
+        };
+
+        db.message_map.set(message_id, message);
+
+        if (!db.user_map.has(sender_id)) {
+            const id = sender_id;
+            const full_name = server_message.sender_full_name;
             const user = { id, full_name };
             db.user_map.set(id, user);
         }
-    }
-
-    for (const message of messages) {
-        db.message_map.set(message.id, message);
     }
 }

@@ -32,7 +32,7 @@ export function messages_for_topic(topic_id: number): Message[] {
         }
     }
 
-    result.sort((m1, m2) => m1.id - m2.id);
+    result.sort((m1, m2) => m1.message_id - m2.message_id);
 
     return result;
 }
@@ -40,10 +40,10 @@ export function messages_for_topic(topic_id: number): Message[] {
 export function get_topic_rows(channel_id: number): TopicRow[] {
     const messages = [];
     for (const message of DB.message_map.values()) {
-        if (message.stream_id === channel_id) {
+        if (message.channel_id === channel_id) {
             messages.push(message);
         }
     }
-    messages.sort((m1, m2) => m1.id - m2.id);
+    messages.sort((m1, m2) => m1.message_id - m2.message_id);
     return topic_row_query.get_rows(DB.topic_map, messages);
 }

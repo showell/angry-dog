@@ -30,7 +30,7 @@ export function handle_event(event: ZulipEvent): void {
 
     if (event.flavor === EventFlavor.MUTATE_MESSAGE_ADDRESS) {
         mutate_messages(event.message_ids, (message) => {
-            message.stream_id = event.new_channel_id;
+            message.channel_id = event.new_channel_id;
             message.topic_id = event.new_topic_id;
         });
     }
@@ -43,7 +43,7 @@ export function handle_event(event: ZulipEvent): void {
 }
 
 function add_message_to_cache(message: Message) {
-    DB.message_map.set(message.id, message);
+    DB.message_map.set(message.message_id, message);
 }
 
 function mutate_message(

@@ -1,7 +1,6 @@
 import type { Message } from "../database/db_types";
 
 export type ListInfo = {
-    last_msg_id: number;
     count: number;
     num_topics: number;
 };
@@ -22,18 +21,15 @@ export class MessageList {
 
         if (messages.length === 0) {
             return {
-                last_msg_id: -1,
                 count: 0,
                 num_topics: 0,
             };
         }
 
-        messages.sort((m1, m2) => m2.id - m1.id);
-        const last_msg_id = messages[0].id;
         const count = messages.length;
         const num_topics = this.num_topics();
 
-        return { last_msg_id, count, num_topics };
+        return { count, num_topics };
     }
 
     num_topics(): number {

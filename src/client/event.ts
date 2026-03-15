@@ -13,7 +13,6 @@ export const enum EventFlavor {
 type MessageEvent = {
     flavor: EventFlavor.MESSAGE;
     message: Message;
-    info: string;
 };
 
 type MutateMessageAddressEvent = {
@@ -55,16 +54,15 @@ function build_event(raw_event: any): ZulipEvent | undefined {
 
                 const message: Message = {
                     content: fix_content(raw_message.content),
-                    id: raw_message.id,
+                    message_id: raw_message.id,
                     sender_id: raw_message.sender_id,
-                    stream_id: raw_message.stream_id,
+                    channel_id: raw_message.stream_id,
                     topic_id: topic.topic_id,
                 };
 
                 return {
                     flavor: EventFlavor.MESSAGE,
                     message,
-                    info: `stream message id ${message.id}`,
                 };
             }
 

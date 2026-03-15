@@ -1,9 +1,9 @@
 export type Message = {
-    content: string;
-    id: number;
+    message_id: number;
     sender_id: number;
-    stream_id: number;
+    channel_id: number;
     topic_id: number;
+    content: string;
 };
 
 export type Stream = {
