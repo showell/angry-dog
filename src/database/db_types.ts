@@ -12,7 +12,7 @@ export type Channel = {
 };
 
 export type User = {
-    id: number;
+    user_id: number;
     full_name: string;
 };
 

@@ -3,7 +3,7 @@ import type { ServerMessage, ServerSubscription } from "../client/server_types";
 import type { Message } from "./db_types";
 
 import { fix_content } from "./content";
-import { DB } from "./database";
+import * as database from "./database";
 
 export function process_server_subscription(
     subscription: ServerSubscription,
@@ -12,7 +12,7 @@ export function process_server_subscription(
         channel_id: subscription.stream_id,
         name: subscription.name,
     };
-    DB.channel_map.set(channel.channel_id, channel);
+    database.insert_channel(channel);
 }
 
 export function process_server_message(server_message: ServerMessage) {
@@ -23,8 +23,7 @@ export function process_server_message(server_message: ServerMessage) {
 
     const sender_id = server_message.sender_id;
 
-    const topic = DB.topic_map.get_or_make_topic_for(channel_id, topic_name);
-    const topic_id = topic.topic_id;
+    const topic_id = database.topic_id_for(channel_id, topic_name);
 
     const message: Message = {
         content,
@@ -34,12 +33,11 @@ export function process_server_message(server_message: ServerMessage) {
         topic_id,
     };
 
-    DB.message_map.set(message_id, message);
+    database.insert_message(message);
 
-    if (!DB.user_map.has(sender_id)) {
-        const id = sender_id;
-        const full_name = server_message.sender_full_name;
-        const user = { id, full_name };
-        DB.user_map.set(id, user);
-    }
+    const user_id = sender_id;
+    const full_name = server_message.sender_full_name;
+    const user = { user_id, full_name };
+
+    database.add_user_if_missing(user);
 }

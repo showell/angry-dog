@@ -33,6 +33,29 @@ export function initialize_DB(): void {
     };
 }
 
+// HELPERS
+
+export function topic_id_for(channel_id: number, topic_name: string): number {
+    const topic = DB.topic_map.get_or_make_topic_for(channel_id, topic_name);
+    return topic.topic_id;
+}
+
+export function insert_channel(channel: Channel): void {
+    DB.channel_map.set(channel.channel_id, channel);
+}
+
+export function insert_message(message: Message): void {
+    DB.message_map.set(message.message_id, message);
+}
+
+export function add_user_if_missing(user: User): void {
+    const user_id = user.user_id;
+
+    if (!DB.user_map.has(user_id)) {
+        DB.user_map.set(user_id, user);
+    }
+}
+
 // EVENTS
 
 export function handle_event(event: ZulipEvent): void {
