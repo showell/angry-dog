@@ -1,3 +1,8 @@
+export type ServerSubscription = {
+    stream_id: number;
+    name: string;
+};
+
 export type ServerMessage = {
     content: string;
     id: number;

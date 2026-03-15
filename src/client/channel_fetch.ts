@@ -1,14 +1,10 @@
-import { DB } from "../database/database";
+import * as database from "../database/database";
 import * as zulip_client from "./zulip_client";
 
 export async function fetch_channel_data(): Promise<void> {
     const subscriptions = await zulip_client.get_subscriptions();
 
     for (const subscription of subscriptions) {
-        const channel = {
-            channel_id: subscription.stream_id,
-            name: subscription.name,
-        };
-        DB.channel_map.set(channel.channel_id, channel);
+        database.process_server_subscription(subscription);
     }
 }

@@ -1,6 +1,6 @@
 import type { User, Channel, Message } from "./db_types";
 import type { ZulipEvent } from "../client/event";
-import type { ServerMessage } from "../client/server_types";
+import type { ServerMessage, ServerSubscription } from "../client/server_types";
 
 import { EventFlavor } from "../client/event";
 import { fix_content } from "./content";
@@ -33,6 +33,16 @@ export function initialize_DB(): void {
         topic_map,
         message_map,
     };
+}
+
+export function process_server_subscription(
+    subscription: ServerSubscription,
+): void {
+    const channel = {
+        channel_id: subscription.stream_id,
+        name: subscription.name,
+    };
+    DB.channel_map.set(channel.channel_id, channel);
 }
 
 export function process_server_message(server_message: ServerMessage) {
