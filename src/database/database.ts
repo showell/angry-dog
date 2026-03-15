@@ -1,14 +1,13 @@
-import type { User, Channel, Message } from "./db_types";
+import type { User, Channel, Message, Topic } from "./db_types";
 import type { ZulipEvent } from "../client/event";
 
 import { EventFlavor } from "../client/event";
-
-import { TopicMap } from "./topic_map";
 
 export let DB: Database;
 
 export type ChannelMap = Map<number, Channel>;
 export type MessageMap = Map<number, Message>;
+export type TopicMap = Map<number, Topic>;
 export type UserMap = Map<number, User>;
 
 export type Database = {
@@ -22,8 +21,7 @@ export function initialize_DB(): void {
     const user_map = new Map<number, User>();
     const channel_map = new Map<number, Channel>();
     const message_map = new Map<number, Message>();
-
-    const topic_map = new TopicMap();
+    const topic_map = new Map<number, Topic>();
 
     DB = {
         user_map,
@@ -35,13 +33,12 @@ export function initialize_DB(): void {
 
 // HELPERS
 
-export function topic_id_for(channel_id: number, topic_name: string): number {
-    const topic = DB.topic_map.get_or_make_topic_for(channel_id, topic_name);
-    return topic.topic_id;
-}
-
 export function insert_channel(channel: Channel): void {
     DB.channel_map.set(channel.channel_id, channel);
+}
+
+export function set_topic(topic: Topic): void {
+    DB.topic_map.set(topic.topic_id, topic);
 }
 
 export function insert_message(message: Message): void {

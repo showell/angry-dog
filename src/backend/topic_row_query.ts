@@ -1,5 +1,5 @@
 import type { Message } from "../database/db_types";
-import type { TopicMap } from "../database/topic_map";
+import type { TopicMap } from "../database/database";
 
 import { MessageList } from "./message_list";
 import { TopicRow } from "./row_types";
@@ -22,7 +22,7 @@ export function get_rows(topic_map: TopicMap, messages: Message[]): TopicRow[] {
     for (const topic_id of message_list_map.keys()) {
         const message_list = message_list_map.get(topic_id)!;
         const list_info = message_list.list_info();
-        const topic = topic_map.get(topic_id);
+        const topic = topic_map.get(topic_id)!;
 
         const topic_row = new TopicRow(topic, list_info);
 

@@ -1,7 +1,7 @@
 import type { Message } from "../database/db_types";
 
 import { fix_content } from "../database/content";
-import { DB } from "../database/database";
+import { TOPIC_HELPER } from "../database/topic_helper";
 
 export const enum EventFlavor {
     MESSAGE,
@@ -47,7 +47,7 @@ function build_event(raw_event: any): ZulipEvent | undefined {
             const raw_message = raw_event.message;
 
             if (raw_message.type === "stream") {
-                const topic = DB.topic_map.get_or_make_topic_for(
+                const topic = TOPIC_HELPER.get_or_make_topic_for(
                     raw_message.stream_id,
                     raw_message.subject,
                 );
@@ -75,10 +75,11 @@ function build_event(raw_event: any): ZulipEvent | undefined {
                     raw_event.new_stream_id ?? raw_event.stream_id;
                 const new_topic_name =
                     raw_event.subject ?? raw_event.orig_subject;
-                const new_topic_id = DB.topic_map.get_topic_id(
+                const new_topic = TOPIC_HELPER.get_or_make_topic_for(
                     new_channel_id,
                     new_topic_name,
                 );
+                const new_topic_id = new_topic.topic_id;
 
                 return {
                     flavor: EventFlavor.MUTATE_MESSAGE_ADDRESS,

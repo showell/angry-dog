@@ -4,6 +4,7 @@ import type { Message } from "./db_types";
 
 import { fix_content } from "./content";
 import * as database from "./database";
+import { TOPIC_HELPER } from "./topic_helper";
 
 export function process_server_subscription(
     subscription: ServerSubscription,
@@ -23,7 +24,9 @@ export function process_server_message(server_message: ServerMessage) {
 
     const sender_id = server_message.sender_id;
 
-    const topic_id = database.topic_id_for(channel_id, topic_name);
+    const topic = TOPIC_HELPER.get_or_make_topic_for(channel_id, topic_name);
+    database.set_topic(topic);
+    const topic_id = topic.topic_id;
 
     const message: Message = {
         content,
