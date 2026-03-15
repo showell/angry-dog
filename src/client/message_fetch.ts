@@ -1,6 +1,6 @@
-import type { ServerMessage } from "./zulip_client";
-
 import * as database from "../database/database";
+
+import type { ServerMessage } from "./server_types";
 import * as zulip_client from "./zulip_client";
 
 const INITIAL_BATCH_SIZE = 1000;

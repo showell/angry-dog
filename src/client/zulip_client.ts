@@ -51,16 +51,6 @@ export async function start_polling(event_handler: EventHandler) {
     }
 }
 
-export type ServerMessage = {
-    content: string;
-    id: number;
-    sender_full_name: string;
-    sender_id: number;
-    subject: string;
-    stream_id: number;
-    type: "stream";
-};
-
 export async function get_messages(anchor: string, num_before: number) {
     const url = new URL(`/api/v1/messages`, TEST_CONFIG.url);
     url.searchParams.set("narrow", `[]`);
