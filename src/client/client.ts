@@ -1,6 +1,7 @@
 import type { ZulipEvent } from "./event";
 
 import * as database from "../database/database";
+import * as event_glue from "../database/event_glue";
 
 import { EventHandler } from "./event";
 import * as channel_fetch from "./channel_fetch";
@@ -9,7 +10,7 @@ import * as zulip_client from "./zulip_client";
 
 export async function start() {
     function handle_zulip_event(event: ZulipEvent) {
-        database.handle_event(event);
+        event_glue.handle_event(event);
     }
 
     const event_manager = new EventHandler(handle_zulip_event);
