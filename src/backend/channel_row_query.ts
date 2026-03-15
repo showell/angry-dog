@@ -1,10 +1,10 @@
-import type { Message, Stream } from "../database/db_types";
+import type { Message, Channel } from "../database/db_types";
 
 import { MessageList } from "./message_list";
 import { ChannelRow } from "./row_types";
 
 export function get_rows(
-    channel_map: Map<number, Stream>,
+    channel_map: Map<number, Channel>,
     messages: Message[],
 ): ChannelRow[] {
     const channel_ids = [...channel_map.keys()];
@@ -26,8 +26,8 @@ export function get_rows(
         const message_list =
             message_list_map.get(channel_id) ?? new MessageList();
         const list_info = message_list.list_info();
-        const stream = channel_map.get(channel_id)!;
-        const channel_row = new ChannelRow(stream, list_info);
+        const channel = channel_map.get(channel_id)!;
+        const channel_row = new ChannelRow(channel, list_info);
 
         rows.push(channel_row);
     }

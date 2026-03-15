@@ -1,20 +1,20 @@
-import type { Message, Stream, Topic } from "../database/db_types.ts";
+import type { Message, Channel, Topic } from "../database/db_types.ts";
 
 import type { ListInfo } from "./message_list.ts";
 
 import { DB } from "../database/database";
 
 export class ChannelRow {
-    _channel: Stream;
+    _channel: Channel;
     _list_info: ListInfo;
 
-    constructor(channel: Stream, list_info: ListInfo) {
+    constructor(channel: Channel, list_info: ListInfo) {
         this._channel = channel;
         this._list_info = list_info;
     }
 
     id(): number {
-        return this._channel.stream_id;
+        return this._channel.channel_id;
     }
 
     name(): string {

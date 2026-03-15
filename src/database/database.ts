@@ -1,4 +1,4 @@
-import type { User, Stream, Message } from "./db_types";
+import type { User, Channel, Message } from "./db_types";
 import type { ZulipEvent } from "../client/event";
 import type { ServerMessage } from "../client/zulip_client";
 
@@ -14,14 +14,14 @@ export type UserMap = Map<number, User>;
 
 export type Database = {
     user_map: Map<number, User>;
-    channel_map: Map<number, Stream>;
+    channel_map: Map<number, Channel>;
     topic_map: TopicMap;
     message_map: MessageMap;
 };
 
 export function initialize_DB(): void {
     const user_map = new Map<number, User>();
-    const channel_map = new Map<number, Stream>();
+    const channel_map = new Map<number, Channel>();
     const topic_map = new TopicMap();
     const message_map = new Map<number, Message>();
 

@@ -6,8 +6,8 @@ export type Message = {
     content: string;
 };
 
-export type Stream = {
-    stream_id: number;
+export type Channel = {
+    channel_id: number;
     name: string;
 };
 
