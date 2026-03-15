@@ -1,6 +1,6 @@
 import type { Message } from "../database/db_types";
 
-import { fix_content } from "./content";
+import { fix_content } from "../database/content";
 import { DB } from "../database/database";
 
 export const enum EventFlavor {

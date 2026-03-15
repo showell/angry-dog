@@ -1,8 +1,10 @@
 import type { User, Stream, Message } from "./db_types";
 import type { ZulipEvent } from "../client/event";
+import type { ServerMessage } from "../client/zulip_client";
 
 import { EventFlavor } from "../client/event";
-import * as fetch from "../client/fetch";
+import { fix_content } from "./content";
+
 import { TopicMap } from "./topic_map";
 
 export let DB: Database;
@@ -17,8 +19,50 @@ export type Database = {
     message_map: MessageMap;
 };
 
-export async function fetch_original_data(): Promise<void> {
-    DB = await fetch.fetch_model_data();
+export function initialize_DB(): void {
+    const user_map = new Map<number, User>();
+    const channel_map = new Map<number, Stream>();
+    const topic_map = new TopicMap();
+    const message_map = new Map<number, Message>();
+
+    DB = {
+        user_map,
+        channel_map,
+        topic_map,
+        message_map,
+    };
+}
+
+export function process_server_message(server_message: ServerMessage) {
+    const message_id = server_message.id;
+    const channel_id = server_message.stream_id;
+    const topic_name = server_message.subject;
+    const content = fix_content(server_message.content);
+
+    const sender_id = server_message.sender_id;
+
+    const topic = DB.topic_map.get_or_make_topic_for(
+        channel_id,
+        topic_name,
+    );
+    const topic_id = topic.topic_id;
+
+    const message: Message = {
+        content,
+        message_id,
+        sender_id,
+        channel_id,
+        topic_id,
+    };
+
+    DB.message_map.set(message_id, message);
+
+    if (!DB.user_map.has(sender_id)) {
+        const id = sender_id;
+        const full_name = server_message.sender_full_name;
+        const user = { id, full_name };
+        DB.user_map.set(id, user);
+    }
 }
 
 // EVENTS
