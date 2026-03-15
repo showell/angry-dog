@@ -1,4 +1,3 @@
-import type { Message } from "../database/db_types";
 import type { ServerMessage } from "./zulip_client";
 
 import * as database from "../database/database";
@@ -54,7 +53,9 @@ export async function backfill(): Promise<void> {
 
         process_message_rows_from_server(data.messages);
 
-        console.log(`${database.DB.message_map.size} messages in cache! (backfill)`);
+        console.log(
+            `${database.DB.message_map.size} messages in cache! (backfill)`,
+        );
         console.log(STATE);
 
         await new Promise((resolve) => setTimeout(resolve, 500));

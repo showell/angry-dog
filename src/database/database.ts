@@ -41,10 +41,7 @@ export function process_server_message(server_message: ServerMessage) {
 
     const sender_id = server_message.sender_id;
 
-    const topic = DB.topic_map.get_or_make_topic_for(
-        channel_id,
-        topic_name,
-    );
+    const topic = DB.topic_map.get_or_make_topic_for(channel_id, topic_name);
     const topic_id = topic.topic_id;
 
     const message: Message = {
