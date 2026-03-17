@@ -36,10 +36,10 @@ async function run() {
         return c.html(html);
     });
 
-    app.get("/topic_messages/:topic_id", (c) => {
-        const topic_id = c.req.param("topic_id");
+    app.get("/topic_messages/:channel_topic_id", (c) => {
+        const channel_topic_id = c.req.param("channel_topic_id");
         let html = boilerplate();
-        html += messages.by_topic_html(parseInt(topic_id));
+        html += messages.by_topic_html(parseInt(channel_topic_id));
         return c.html(html);
     });
 
