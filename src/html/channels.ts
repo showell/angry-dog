@@ -1,13 +1,10 @@
 import he from "he";
 
-import type { ChannelRow } from "../backend/row_types";
+import { DB } from "../database/database";
 
-import * as model from "../backend/model";
-
-function channel_row_html(channel_row: ChannelRow): string {
-    const channel_id = channel_row.id();
-    const name = he.escape(channel_row.name());
-    const count = channel_row.num_topics();
+function channel_row_html(channel_id: number): string {
+    const name = he.escape(DB.channel_name.get_string(channel_id) ?? "unknown");
+    const topic_count = DB.channel_topic.get_id2_count(channel_id);
 
     return `
 <div class="channel_row">
@@ -15,20 +12,24 @@ function channel_row_html(channel_row: ChannelRow): string {
     <div>
         <a href="/topics/${channel_id}">topics</a>
     </div>
-    <div class="channel_count">${count} topics</div>
+    <div class="channel_count">${topic_count} topics</div>
 </div>
 `;
 }
 
 export function html(): string {
-    const channel_rows = model.get_channel_rows();
+    const channel_ids = DB.channel_name.id_array();
 
-    channel_rows.sort((row1, row2) => row1.name().localeCompare(row2.name()));
+    channel_ids.sort((id1, id2) => {
+        const name1 = DB.channel_name.get_string(id1) ?? "unknown";
+        const name2 = DB.channel_name.get_string(id2) ?? "unknown";
+        return name1.localeCompare(name2);
+    });
 
-    let html = `<h4>${channel_rows.length} channels</h4>`;
+    let html = `<h4>${channel_ids.length} channels</h4>`;
 
-    for (const channel_row of channel_rows) {
-        html += channel_row_html(channel_row);
+    for (const channel_id of channel_ids) {
+        html += channel_row_html(channel_id);
     }
 
     return html;

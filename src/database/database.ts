@@ -1,51 +1,35 @@
-import type { User, Channel, Message, Topic } from "./db_types";
-
 export let DB: Database;
 
-export type ChannelMap = Map<number, Channel>;
-export type MessageMap = Map<number, Message>;
-export type TopicMap = Map<number, Topic>;
-export type UserMap = Map<number, User>;
+import { IntInt } from "../util/int_int";
+import { IntIntInt } from "../util/int_int_int";
+import { IntString } from "../util/int_string";
 
 export type Database = {
-    user_map: UserMap;
-    channel_map: ChannelMap;
-    topic_map: TopicMap;
-    message_map: MessageMap;
+    channel_topic: IntIntInt;
+
+    message_sender: IntInt;
+    message_channel: IntInt;
+    message_to_channel_topic: IntInt;
+    message_content: IntInt;
+
+    content_string: IntString;
+    channel_name: IntString;
+    user_full_name: IntString;
+    topic_name: IntString;
 };
 
 export function initialize_DB(): void {
-    const user_map = new Map<number, User>();
-    const channel_map = new Map<number, Channel>();
-    const message_map = new Map<number, Message>();
-    const topic_map = new Map<number, Topic>();
-
     DB = {
-        user_map,
-        channel_map,
-        topic_map,
-        message_map,
+        channel_topic: new IntIntInt(),
+
+        message_sender: new IntInt(),
+        message_channel: new IntInt(),
+        message_to_channel_topic: new IntInt(),
+        message_content: new IntInt(),
+
+        content_string: new IntString(),
+        channel_name: new IntString(),
+        user_full_name: new IntString(),
+        topic_name: new IntString(),
     };
-}
-
-// HELPERS
-
-export function insert_channel(channel: Channel): void {
-    DB.channel_map.set(channel.channel_id, channel);
-}
-
-export function set_topic(topic: Topic): void {
-    DB.topic_map.set(topic.topic_id, topic);
-}
-
-export function insert_message(message: Message): void {
-    DB.message_map.set(message.message_id, message);
-}
-
-export function add_user_if_missing(user: User): void {
-    const user_id = user.user_id;
-
-    if (!DB.user_map.has(user_id)) {
-        DB.user_map.set(user_id, user);
-    }
 }

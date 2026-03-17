@@ -1,11 +1,15 @@
 import he from "he";
 
-import * as model from "../backend/model";
-import { MessageRow } from "../backend/row_types";
+import { DB } from "../database/database";
 
-export function message_html(message_row: MessageRow): string {
-    const sender_name = he.escape(message_row.sender_name());
-    const content = message_row.content();
+export function message_html(message_id: number): string {
+    const sender_id = DB.message_sender.get(message_id)!;
+    const sender_name = he.escape(
+        DB.user_full_name.get_string(sender_id) ?? "unknown",
+    );
+    const angry_dog_content_id = DB.message_content.get(message_id)!;
+    const content = DB.content_string.get_string(angry_dog_content_id)!;
+
     return `
 <div class="message_sender">${sender_name}</div>
 <div>${content}</div>
@@ -13,15 +17,19 @@ export function message_html(message_row: MessageRow): string {
 `;
 }
 
-export function by_topic_html(topic_id: number): string {
-    const messages = model.messages_for_topic(topic_id);
-    const topic_name = he.escape("> " + model.topic_name_for(topic_id));
+export function by_topic_html(channel_topic_id: number): string {
+    const message_ids = [
+        ...DB.message_to_channel_topic.reverse_get(channel_topic_id),
+    ];
+    message_ids.sort();
 
-    let html = `<h4>${messages.length} messages for ${topic_name}</h4>`;
+    const topic_id = DB.channel_topic.get_id2(channel_topic_id)!;
+    const topic_name = he.escape("> " + DB.topic_name.get_string(topic_id));
 
-    for (const message of messages) {
-        const message_row = new MessageRow(message);
-        html += message_html(message_row);
+    let html = `<h4>${message_ids.length} messages for ${topic_name}</h4>`;
+
+    for (const message_id of message_ids) {
+        html += message_html(message_id);
     }
 
     return html;

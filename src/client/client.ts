@@ -2,7 +2,6 @@ import * as database from "../database/database";
 
 import * as channel_fetch from "./channel_fetch";
 import * as message_fetch from "./message_fetch";
-import * as zulip_client from "./zulip_client";
 
 export async function start() {
     database.initialize_DB();

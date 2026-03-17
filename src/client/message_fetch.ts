@@ -26,14 +26,14 @@ export async function fetch_initial_messages(): Promise<void> {
 
     process_message_rows_from_server(data.messages);
 
-    console.log(`${database.DB.message_map.size} messages fetched!`);
+    console.log(`${database.DB.message_content.size()} messages fetched!`);
     console.log(STATE);
 }
 
 export async function backfill(): Promise<void> {
     while (!STATE.found_oldest) {
         const num_before = Math.min(
-            MAX_SIZE - database.DB.message_map.size,
+            MAX_SIZE - database.DB.message_content.size(),
             BACKFILL_BATCH_SIZE,
         );
 
@@ -56,7 +56,7 @@ export async function backfill(): Promise<void> {
         process_message_rows_from_server(data.messages);
 
         console.log(
-            `${database.DB.message_map.size} messages in cache! (backfill)`,
+            `${database.DB.message_content.size()} messages in cache! (backfill)`,
         );
         console.log(STATE);
 
