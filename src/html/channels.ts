@@ -30,7 +30,7 @@ function channel_row_html(channel_id: number): string {
 }
 
 export function html(): string {
-    const channel_ids = DB.channel_name.id_array();
+    const channel_ids = get_channel_ids();
 
     alpha_sort(channel_ids, get_channel_name);
 

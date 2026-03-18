@@ -9,7 +9,9 @@ function get_channel_topic_ids(channel_id: number): number[] {
     return DB.channel_topic.get_ids_from_id1(channel_id);
 }
 
-function get_topic_name_from_channel_topic_id(channel_topic_id: number): string {
+function get_topic_name_from_channel_topic_id(
+    channel_topic_id: number,
+): string {
     const topic_id = DB.channel_topic.get_id2(channel_topic_id)!;
     return DB.topic_name.get_string(topic_id) ?? "unknown";
 }
