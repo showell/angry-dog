@@ -10,6 +10,10 @@ export class IntInt {
         this.id2_values = new Set<number>;
     }
 
+    size(): number {
+        return this.int_map.size;
+    }
+
     set(id1: number, id2: number): void {
         this.int_map.set(id1, id2);
 
