@@ -6,7 +6,7 @@ export class IntIntInt {
     seq: number;
 
     constructor() {
-        this.map = new Map<string, number>;
+        this.map = new Map<string, number>();
         this.id2_from_id1 = new Map<number, Set<number>>();
         this.ids_from_id1 = new Map<number, Set<number>>();
         this.id2_reverse_map = new Map<number, number>();

@@ -7,7 +7,7 @@ export class IntInt {
     constructor() {
         this.int_map = new Map<number, number>();
         this.reverse_map = new Map<number, Set<number>>();
-        this.id2_values = new Set<number>;
+        this.id2_values = new Set<number>();
     }
 
     size(): number {

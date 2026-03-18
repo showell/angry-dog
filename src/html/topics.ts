@@ -9,7 +9,8 @@ function topic_name_from_channel_topic_id(channel_topic_id: number): string {
 
 function topic_row_html(channel_topic_id: number): string {
     const name = he.escape(topic_name_from_channel_topic_id(channel_topic_id));
-    const count = DB.message_to_channel_topic.reverse_get(channel_topic_id).size;
+    const count =
+        DB.message_to_channel_topic.reverse_get(channel_topic_id).size;
 
     return `
 <div class="topic_row">
@@ -31,7 +32,9 @@ export function html(channel_id: number): string {
         return name1.localeCompare(name2);
     });
 
-    const channel_name = he.escape("#" + DB.channel_name.get_string(channel_id));
+    const channel_name = he.escape(
+        "#" + DB.channel_name.get_string(channel_id),
+    );
 
     let html = `<h4>${channel_topic_ids.length} topics for ${channel_name}</h4>`;
 

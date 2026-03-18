@@ -1,7 +1,7 @@
 import type { ServerMessage, ServerSubscription } from "../client/server_types";
 
 import { fix_content } from "./content";
-import { DB} from "./database";
+import { DB } from "./database";
 
 export function process_server_subscription(
     subscription: ServerSubscription,
@@ -20,7 +20,10 @@ export function process_server_message(server_message: ServerMessage) {
     const full_name = server_message.sender_full_name;
 
     const angry_dog_topic_id = DB.topic_name.get_or_make(topic_name);
-    const angry_dog_channel_topic_id = DB.channel_topic.get_or_make_id(channel_id, angry_dog_topic_id);
+    const angry_dog_channel_topic_id = DB.channel_topic.get_or_make_id(
+        channel_id,
+        angry_dog_topic_id,
+    );
     const angry_dog_content_id = DB.content_string.get_or_make(content);
 
     DB.message_sender.set(message_id, sender_id);
