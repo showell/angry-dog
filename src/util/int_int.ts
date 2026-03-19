@@ -31,8 +31,4 @@ export class IntInt {
     reverse_get(id2: number): Set<number> {
         return this.reverse_map.get(id2) ?? new Set<number>();
     }
-
-    get_id2_values(): Set<number> {
-        return this.id2_values;
-    }
 }
